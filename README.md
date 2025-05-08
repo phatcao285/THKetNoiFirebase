@@ -1,3 +1,11 @@
+# Video Thực Hành Buổi 3 Kết Nối FireBase
+
+
+
+https://github.com/user-attachments/assets/48589e42-b5fb-41b2-b064-5efbc2a0b852
+
+
+
 # THKetNoiFirebase
 
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
