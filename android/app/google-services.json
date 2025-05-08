@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "391426381863",
+    "project_id": "bt4firebase",
+    "storage_bucket": "bt4firebase.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:391426381863:android:599d581512ae0a5bd4d602",
+        "android_client_info": {
+          "package_name": "com.bt4"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWAp56265AysUW5ixtn6hbc3Onf9DGdC0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

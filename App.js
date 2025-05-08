@@ -1,78 +1,25 @@
-import React from 'react';
+import './firebaseConfig'; 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import { Provider as PaperProvider, DefaultTheme } from 'react-native-paper';
-import HomeScreen from './Buoi4/HomeScreen';
-import DetailsScreen from './Buoi4/DetailsScreen';
-import ProfileScreen from './Buoi4/ProfileScreen';
-import CustomNavigationBar from './Buoi4/CustomNavigationBar';
-import CustomDrawerContent from './Buoi4/CustomDrawerContent';
-
+import LoginScreen from './THBUOI3/screens/LoginScreen';
+import RegisterScreen from './THBUOI3/screens/Register';
+import MainTabNavigator from './THBUOI3/screens/MainTabNavigator';
+import AddNewService from './THBUOI3/screens/AddNewService';
+import ServiceDetail from './THBUOI3/screens/ServiceDetail';
+import UpdateService from './THBUOI3/screens/UpdateService';
 const Stack = createStackNavigator();
-const Drawer = createDrawerNavigator();
 
-// Tùy chỉnh theme
-const theme = {
-  ...DefaultTheme,
-  colors: {
-    ...DefaultTheme.colors,
-    primary: '#673AB7',
-    accent: '#9C27B0',
-  },
-};
-
-// Stack Navigator cho phần chính
-function MainStackNavigator() {
+export default function App() {
   return (
-    <Stack.Navigator
-      initialRouteName="Home"
-      screenOptions={{
-        header: (props) => <CustomNavigationBar {...props} />,
-      }}>
-      <Stack.Screen 
-        name="Home" 
-        component={HomeScreen}
-        options={{ title: 'Home' }}
-      />
-      <Stack.Screen 
-        name="Details" 
-        component={DetailsScreen}
-        options={{ title: 'Details' }}
-      />
-    </Stack.Navigator>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="Register" component={RegisterScreen} />
+        <Stack.Screen name="MainTab" component={MainTabNavigator} />
+        <Stack.Screen name="AddNewService" component={AddNewService} />
+        <Stack.Screen name="ServiceDetail" component={ServiceDetail} />
+        <Stack.Screen name="UpdateService" component={UpdateService} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
-
-// App component với Drawer Navigator
-function App() {
-  return (
-    <PaperProvider theme={theme}>
-      <NavigationContainer>
-        <Drawer.Navigator
-          initialRouteName="MainStack"
-          drawerContent={(props) => <CustomDrawerContent {...props} />}
-          screenOptions={{
-            headerShown: false,
-            drawerStyle: {
-              width: 240,
-            },
-          }}
-        >
-          <Drawer.Screen 
-            name="MainStack" 
-            component={MainStackNavigator} 
-            options={{ title: 'Home' }}
-          />
-          <Drawer.Screen 
-            name="Profile" 
-            component={ProfileScreen} 
-            options={{ title: 'Profile' }}
-          />
-        </Drawer.Navigator>
-      </NavigationContainer>
-    </PaperProvider>
-  );
-}
-
-export default App;
