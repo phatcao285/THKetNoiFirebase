@@ -2,7 +2,15 @@
 
 
 
-https://github.com/user-attachments/assets/48589e42-b5fb-41b2-b064-5efbc2a0b852
+1. Admin
+
+https://github.com/user-attachments/assets/be494ff9-2efe-45d9-b015-325c1fd45f89
+
+2. Customers
+
+
+https://github.com/user-attachments/assets/7bd6d942-1f62-4386-a893-86e0b5bbbd0b
+
 
 
 
