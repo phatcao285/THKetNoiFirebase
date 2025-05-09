@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { getFirestore, collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 import { getApp } from 'firebase/app';
+import auth from '@react-native-firebase/auth';
 
 export default function HomeScreen() {
   const navigation = useNavigation();
   const [services, setServices] = useState([]);
   const db = getFirestore(getApp());
+  const [displayName, setDisplayName] = useState(auth().currentUser?.displayName || '');
 
   useEffect(() => {
     const q = query(collection(db, 'services'), orderBy('createdAt', 'desc'));
@@ -22,18 +24,33 @@ export default function HomeScreen() {
     return () => unsubscribe();
   }, []);
 
+  useFocusEffect(
+    React.useCallback(() => {
+      let isActive = true;
+      auth().currentUser.reload().then(() => {
+        if (isActive) setDisplayName(auth().currentUser?.displayName || '');
+      });
+      return () => { isActive = false; };
+    }, [])
+  );
+
   return (
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerText}>HUYỀN TRINH</Text>
-        <Icon name="account-circle" size={32} color="#fff" />
+        <Text style={styles.headerText}>{displayName || 'HUYỀN TRINH'}</Text>
+        <Icon
+          name="account-circle"
+          size={32}
+          color="#fff"
+          onPress={() => navigation.navigate('Profile')}
+        />
       </View>
 
       {/* Logo */}
       <View style={styles.logoContainer}>
         <Image
-          source={require('../assets/logolab3.png')}
+          source={require('../../assets/logolab3.png')}
           style={styles.logo}
           resizeMode="contain"
         />

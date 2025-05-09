@@ -5,7 +5,7 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
 
-export default function LoginScreen() {
+export default function CustomerLoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [secureText, setSecureText] = useState(true);
@@ -19,42 +19,24 @@ export default function LoginScreen() {
     try {
       const userCredential = await auth().signInWithEmailAndPassword(email, password);
       const user = userCredential.user;
-
-      // Kiểm tra role của user
       const userDoc = await firestore().collection('users').doc(user.uid).get();
-      
       if (!userDoc.exists) {
-        // Nếu chưa có document trong collection users, tạo mới với role là customer
         await firestore().collection('users').doc(user.uid).set({
           email: user.email,
           role: 'customer',
           createdAt: firestore.FieldValue.serverTimestamp(),
         });
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'CustomerHome' }],
-        });
+        navigation.reset({ index: 0, routes: [{ name: 'CustomerHome' }] });
         return;
       }
-
       const userData = userDoc.data();
-      console.log('User data:', userData); // Debug log
-
-      if (userData.role === 'admin') {
-        // Nếu là admin, chuyển đến MainTab
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'MainTab' }],
-        });
+      if (userData.role === 'customer') {
+        navigation.reset({ index: 0, routes: [{ name: 'CustomerHome' }] });
       } else {
-        // Nếu là customer hoặc không có role, chuyển đến CustomerHome
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'CustomerHome' }],
-        });
+        await auth().signOut();
+        Alert.alert('Lỗi', 'Tài khoản này không phải khách hàng!');
       }
     } catch (error) {
-      console.error('Login error:', error);
       switch (error.code) {
         case 'auth/invalid-email':
           Alert.alert('Lỗi', 'Email không hợp lệ');
@@ -74,7 +56,7 @@ export default function LoginScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
+      <Text style={styles.title}>Đăng nhập</Text>
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -87,7 +69,7 @@ export default function LoginScreen() {
       <View style={styles.passwordContainer}>
         <TextInput
           style={styles.passwordInput}
-          placeholder="Password"
+          placeholder="Mật khẩu"
           placeholderTextColor="#bdbdbd"
           value={password}
           onChangeText={setPassword}
@@ -98,11 +80,11 @@ export default function LoginScreen() {
         </TouchableOpacity>
       </View>
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Login</Text>
+        <Text style={styles.buttonText}>Đăng nhập</Text>
       </TouchableOpacity>
       <View style={styles.registerContainer}>
-        <TouchableOpacity style={styles.buttonRegister} onPress={() => navigation.navigate('Register')}>
-          <Text style={styles.buttonRegisterText}>Register</Text>
+        <TouchableOpacity style={styles.buttonRegister} onPress={() => navigation.navigate('CustomerRegister')}>
+          <Text style={styles.buttonRegisterText}>Đăng ký</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -118,10 +100,10 @@ const styles = StyleSheet.create({
     padding: 24,
   },
   title: {
-    fontSize: 48,
+    fontSize: 40,
     fontWeight: 'bold',
     color: '#f06277',
-    marginBottom: 48,
+    marginBottom: 32,
   },
   input: {
     width: '100%',
@@ -129,7 +111,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fafafd',
     borderRadius: 12,
     paddingHorizontal: 18,
-    marginBottom: 18,
+    marginBottom: 16,
     borderWidth: 1,
     borderColor: '#e0e0e0',
     fontSize: 16,
@@ -143,7 +125,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fafafd',
     borderRadius: 12,
     paddingHorizontal: 18,
-    marginBottom: 32,
+    marginBottom: 24,
     borderWidth: 1,
     borderColor: '#e0e0e0',
   },
@@ -173,7 +155,7 @@ const styles = StyleSheet.create({
   },
   buttonRegister: {
     width: '100%',
-    height: 56,
+    height: 48,
     borderRadius: 12,
     borderWidth: 2,
     borderColor: '#f06277',
@@ -184,6 +166,6 @@ const styles = StyleSheet.create({
   buttonRegisterText: {
     color: '#f06277',
     fontWeight: 'bold',
-    fontSize: 18,
+    fontSize: 16,
   },
 }); 

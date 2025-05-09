@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
 
 export default function LoginScreen() {
@@ -17,58 +16,10 @@ export default function LoginScreen() {
       return;
     }
     try {
-      const userCredential = await auth().signInWithEmailAndPassword(email, password);
-      const user = userCredential.user;
-
-      // Kiểm tra role của user
-      const userDoc = await firestore().collection('users').doc(user.uid).get();
-      
-      if (!userDoc.exists) {
-        // Nếu chưa có document trong collection users, tạo mới với role là customer
-        await firestore().collection('users').doc(user.uid).set({
-          email: user.email,
-          role: 'customer',
-          createdAt: firestore.FieldValue.serverTimestamp(),
-        });
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'CustomerHome' }],
-        });
-        return;
-      }
-
-      const userData = userDoc.data();
-      console.log('User data:', userData); // Debug log
-
-      if (userData.role === 'admin') {
-        // Nếu là admin, chuyển đến MainTab
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'MainTab' }],
-        });
-      } else {
-        // Nếu là customer hoặc không có role, chuyển đến CustomerHome
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'CustomerHome' }],
-        });
-      }
+      await auth().signInWithEmailAndPassword(email, password);
+      navigation.replace('MainTab');
     } catch (error) {
-      console.error('Login error:', error);
-      switch (error.code) {
-        case 'auth/invalid-email':
-          Alert.alert('Lỗi', 'Email không hợp lệ');
-          break;
-        case 'auth/user-disabled':
-          Alert.alert('Lỗi', 'Tài khoản đã bị vô hiệu hóa');
-          break;
-        case 'auth/user-not-found':
-        case 'auth/wrong-password':
-          Alert.alert('Lỗi', 'Email hoặc mật khẩu không đúng');
-          break;
-        default:
-          Alert.alert('Lỗi', 'Đã xảy ra lỗi khi đăng nhập');
-      }
+      Alert.alert('Đăng nhập thất bại', error.message);
     }
   };
 
@@ -101,10 +52,11 @@ export default function LoginScreen() {
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
       <View style={styles.registerContainer}>
-        <TouchableOpacity style={styles.buttonRegister} onPress={() => navigation.navigate('Register')}>
-          <Text style={styles.buttonRegisterText}>Register</Text>
-        </TouchableOpacity>
+      <TouchableOpacity style={styles.buttonRegister} onPress={() => navigation.navigate('Register')}>
+        <Text style={styles.buttonRegisterText}>Register</Text>
+      </TouchableOpacity>
       </View>
+      
     </View>
   );
 }
@@ -186,4 +138,4 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 18,
   },
-}); 
+});

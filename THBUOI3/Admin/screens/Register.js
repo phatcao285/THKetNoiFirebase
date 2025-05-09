@@ -34,12 +34,13 @@ const RegisterScreen = ({ navigation }) => {
     auth()
       .createUserWithEmailAndPassword(email, password)
       .then((response) => {
+        const role = email === 'phatc246@gmail.com' ? 'admin' : 'customer';
         USERS.doc(response.user.uid).set({
           fullName,
           email,
           phone,
           address,
-          role: "customer",
+          role: role,
           createdAt: firestore.FieldValue.serverTimestamp(),
         });
         Alert.alert("Thành công", "Đăng ký thành công!");
